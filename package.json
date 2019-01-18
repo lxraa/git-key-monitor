@@ -1,0 +1,16 @@
+{
+  "name": "git-key-monitor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "lxraa",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "mongoose": "^5.4.4",
+    "xml": "^1.0.1"
+  }
+}
