@@ -10,7 +10,15 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.18.0",
+    "isopen": "^1.2.1",
+    "lodash": "^4.17.11",
+    "log4js": "^4.0.0",
     "mongoose": "^5.4.4",
+    "mysql2": "^1.6.4",
+    "private-ip": "^1.0.5",
+    "sequelize": "^4.42.0",
+    "should": "^13.2.3",
+    "validator": "^10.11.0",
     "xml": "^1.0.1"
   }
 }

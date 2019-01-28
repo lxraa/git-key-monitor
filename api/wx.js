@@ -17,7 +17,8 @@ class Wx{
 		let url = `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${this.appkey}&secret=${this.secret}`;
 		await axios({
 			"method":"GET",
-			"url":url
+			"url":url,
+			"timeout":5000
 		}).then(res=>{
 			if(checkParameters(res.data,["access_token"])){
 				r = true;
@@ -26,7 +27,7 @@ class Wx{
 				r = false;
 			}
 		});
-		return r;
+		return Promise.resolve(r);
 	}
 
 	async isAuthed(){
@@ -34,7 +35,8 @@ class Wx{
 		let url = `https://api.weixin.qq.com/cgi-bin/user/get?access_token=${this.access_token}&next_openid=`;
 		await axios({
 			"method":"GET",
-			"url":url
+			"url":url,
+			"timeout":5000
 		}).then(res=>{
 			if(checkParameters(res.data,["next_openid"])){
 				r = true;
@@ -43,17 +45,25 @@ class Wx{
 				r = false;
 			}
 		});
-		return r;
+		return Promise.resolve(r);
 	}
 
 }
 
 
 if(!module.parent){
-	let wx = new Wx("wxbc321b15c6175e60","8c26a6be17ca88de6140fcd78288f702");
-	wx.isReal().then(res=>{
-		console.log(res);
-	});
+
+	async function main(){
+		let wx = new Wx("wx5f48869e357d5e5d","ba12856cc902770b516fd854e5900a89");
+
+		let is_real = await wx.isReal();
+		let is_authed = await wx.isAuthed();
+		if(is_real && is_authed){
+			
+		}
+		console.log(is_real,is_authed);
+	}
+	main();
 }
 
 

@@ -1,5 +1,5 @@
-const axios = require("axios");
 const util = require("util");
+const request = require("../lib/proxy_request");
 class Git{
 	constructor(key){
 		this.key = key;
@@ -12,7 +12,7 @@ class Git{
 	}
 
 	async graphql(data){
-		await axios({
+		await request({
 			"method":"POST",
 			"url":`https://api.github.com/graphql`,
 			"headers":this.getHeaders(),
@@ -25,11 +25,17 @@ class Git{
 
 	}
 
+	transHtmlurlToRawUrl(url){
+		let url_obj = new URL(url);
+		let raw_url = `https://raw.githubusercontent.com${url_obj.pathname.replace("blob/","")}`;
+		return raw_url;
+	}
+
 	async getApiDocs(){
 		let r ;
-		await axios({
+		await request({
 			"method":"GET",
-			"url":"https://api.github.com",
+			"url":"http://api.github.com",
 			"headers":this.getHeaders()
 		}).then(res=>{
 			r = res.data;
@@ -38,10 +44,10 @@ class Git{
 	}
 
 	async searchUsers(q,p){
-		let r ;
-		await axios({
+		let r;
+		await request({
 			"method":"GET",
-			"url":`https://api.github.com/search/users?q=${q}&page=${p}&per_page=100`,
+			"url":`http://api.github.com/search/users?q=${q}&page=${p}&per_page=100`,
 			"headers":this.getHeaders()
 		}).then(res=>{
 			r = res.data;
@@ -51,9 +57,24 @@ class Git{
 
 	async searchCode(q,p){
 		let r;
-		await axios({
+		// console.log(`http://api.github.com/search/code?q=${q}&page=${p}&per_page=100`);
+		await request({
 			"method":"GET",
-			"url":`https://api.github.com/search/code?q=${q}&page=${p}&per_page=100`,//{&page,per_page,sort,order}`
+			"url":`http://api.github.com/search/code?q=${q}&page=${p}&per_page=100`,//{&page,per_page,sort,order}`
+			"headers":this.getHeaders(),
+			"timeout":10000
+			// "_proxy":true
+		}).then(res=>{
+			r = res.data;
+		});
+		return r;
+	}
+
+	async searchRepos(q,p){
+		let r;
+		await request({
+			"method":"GET",
+			"url":`http://api.github.com/search/repositories?q=${q}&page=${p}&per_page=100`,
 			"headers":this.getHeaders()
 		}).then(res=>{
 			r = res.data;
@@ -63,18 +84,16 @@ class Git{
 }
 
 if(!module.parent){
-	let git = new Git("459500e7e33c56247ac89e194b2ff1df7c82a3d0");
-	git.searchCode("thinkphp",1).then(res=>{
-		console.log(res);console.log(res.items.length)
-	}).catch(e=>{
-		console.log(e);
-	});
-	// git.searchUsers("lxraa");
-	// git.getApiDocs().then(res=>{console.log(res);})
+	let git = new Git("ff7a9ca596bf1d73dad07532082c8db1e85c1eec");
+	// git.searchCode("test",1).then(res=>{
+	// 	console.log(res);
+	// });
+
+	git.getApiDocs().then(res=>{console.log(res);})
 	/*
 	{ name: 'Repository',
-  kind: 'OBJECT',
-  fields:
+	kind: 'OBJECT',
+	fields:
    [ { name: 'assignableUsers' },
      { name: 'branchProtectionRules' },
      { name: 'codeOfConduct' },
